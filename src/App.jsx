@@ -1,11 +1,32 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FaPlay, FaStop, FaDownload } from "react-icons/fa";
 
 function App() {
   const [videoUrl, setVideoUrl] = useState(null);
+  const [recordingTime, setRecordingTime] = useState(0); // Timer state
+  const [isRecording, setIsRecording] = useState(false);
   const screenVideoRef = useRef(null);
   const webcamVideoRef = useRef(null);
   const mediaRecordersRef = useRef([]);
+  const downloadSectionRef = useRef(null); // Ref for the download section
+
+  useEffect(() => {
+    let timer;
+    if (isRecording) {
+      timer = setInterval(() => {
+        setRecordingTime((prev) => prev + 1);
+      }, 1000);
+    } else {
+      clearInterval(timer);
+    }
+    return () => clearInterval(timer);
+  }, [isRecording]);
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60).toString().padStart(2, "0");
+    const seconds = (time % 60).toString().padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  };
 
   const startRecording = async () => {
     try {
@@ -16,7 +37,7 @@ function App() {
 
       const webcamStream = await navigator.mediaDevices.getUserMedia({
         video: { width: 640, height: 480 },
-        audio: false,
+        audio: true,
       });
 
       screenVideoRef.current.srcObject = screenStream;
@@ -37,10 +58,16 @@ function App() {
         const blob = new Blob(chunks, { type: "video/webm" });
         const url = URL.createObjectURL(blob);
         setVideoUrl(url);
+
+        // Scroll to the download section after stopping recording
+        if (downloadSectionRef.current) {
+          downloadSectionRef.current.scrollIntoView({ behavior: "smooth" });
+        }
       };
 
       mediaRecorder.start();
       mediaRecordersRef.current = [mediaRecorder];
+      setIsRecording(true); // Start timer
     } catch (err) {
       console.error("Recording error:", err);
     }
@@ -56,22 +83,17 @@ function App() {
     const webcamTrack = webcamStream.getVideoTracks()[0];
 
     const canvasStream = canvas.captureStream(30);
-    const padding = 16; // Padding around the webcam view
-    const borderRadius = 20; // Rounded corner radius
-    const borderColor = "white"; // Webcam border color
-    const borderWidth = 5; // Webcam border width
-    const webcamWidth = 320; // Width of the webcam view
-    const webcamHeight = 240; // Height of the webcam view
-
+    const padding = 16;
+    const borderRadius = 20;
+    const borderColor = "white";
+    const borderWidth = 5;
+    const webcamWidth = 320;
+    const webcamHeight = 240;
 
     const drawStreams = () => {
-      // Draw the screen feed to cover the entire canvas
       ctx.drawImage(screenVideoRef.current, 0, 0, canvas.width, canvas.height);
 
-      // Save the current drawing state
       ctx.save();
-
-      // Define the rounded rectangle for the webcam feed
       const x = canvas.width - webcamWidth - padding;
       const y = canvas.height - webcamHeight - padding;
 
@@ -92,18 +114,12 @@ function App() {
       ctx.quadraticCurveTo(x, y, x + borderRadius, y);
       ctx.closePath();
 
-      // Draw the white border
       ctx.lineWidth = borderWidth;
       ctx.strokeStyle = borderColor;
       ctx.stroke();
 
-      // Clip the webcam feed into the rounded rectangle
       ctx.clip();
-
-      // Draw the webcam feed inside the rounded rectangle
       ctx.drawImage(webcamVideoRef.current, x, y, webcamWidth, webcamHeight);
-
-      // Restore the previous drawing state
       ctx.restore();
     };
 
@@ -120,11 +136,12 @@ function App() {
 
   const stopRecording = () => {
     mediaRecordersRef.current.forEach((recorder) => recorder.stop());
+    setIsRecording(false);
+    setRecordingTime(0); // Reset timer
   };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Hero Section */}
       <section className="bg-gradient-to-r from-green-500 to-blue-500 text-center py-16 px-6">
         <h1 className="text-4xl md:text-5xl font-bold text-white">
           Screen & Webcam Recorder
@@ -149,13 +166,16 @@ function App() {
             Stop Recording
           </button>
         </div>
+        {isRecording && (
+          <div className="mt-4 text-lg font-bold text-white">
+            Recording Time: {formatTime(recordingTime)}
+          </div>
+        )}
       </section>
 
-      {/* Video Previews Section */}
       <section className="py-12 px-6">
         <h2 className="text-3xl font-bold text-center mb-8">Live Previews</h2>
         <div className="grid md:grid-cols-2 gap-8">
-          {/* Screen View */}
           <div className="text-center">
             <h3 className="text-xl font-semibold mb-4">Screen View</h3>
             <video
@@ -165,7 +185,6 @@ function App() {
               className="w-full max-w-lg h-auto rounded-lg shadow-lg mx-auto"
             />
           </div>
-          {/* Webcam View */}
           <div className="text-center">
             <h3 className="text-xl font-semibold mb-4">Webcam View</h3>
             <video
@@ -178,9 +197,11 @@ function App() {
         </div>
       </section>
 
-      {/* Recorded Video Section */}
       {videoUrl && (
-        <section className="py-12 px-6 bg-gray-800">
+        <section
+          className="py-12 px-6 bg-gray-800"
+          ref={downloadSectionRef} // Reference for scrolling
+        >
           <h2 className="text-3xl font-bold text-center mb-8">Your Recording</h2>
           <div className="text-center">
             <video
@@ -199,7 +220,7 @@ function App() {
           </div>
         </section>
       )}
-       <section className="py-16 px-6">
+      <section className="py-16 px-6">
         <h2 className="text-3xl font-bold text-center mb-8">
           Why Use Our Recorder?
         </h2>
