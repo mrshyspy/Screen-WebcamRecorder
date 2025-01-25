@@ -23,7 +23,9 @@ function App() {
   }, [isRecording]);
 
   const formatTime = (time) => {
-    const minutes = Math.floor(time / 60).toString().padStart(2, "0");
+    const minutes = Math.floor(time / 60)
+      .toString()
+      .padStart(2, "0");
     const seconds = (time % 60).toString().padStart(2, "0");
     return `${minutes}:${seconds}`;
   };
@@ -100,7 +102,12 @@ function App() {
       ctx.beginPath();
       ctx.moveTo(x + borderRadius, y);
       ctx.lineTo(x + webcamWidth - borderRadius, y);
-      ctx.quadraticCurveTo(x + webcamWidth, y, x + webcamWidth, y + borderRadius);
+      ctx.quadraticCurveTo(
+        x + webcamWidth,
+        y,
+        x + webcamWidth,
+        y + borderRadius
+      );
       ctx.lineTo(x + webcamWidth, y + webcamHeight - borderRadius);
       ctx.quadraticCurveTo(
         x + webcamWidth,
@@ -109,7 +116,12 @@ function App() {
         y + webcamHeight
       );
       ctx.lineTo(x + borderRadius, y + webcamHeight);
-      ctx.quadraticCurveTo(x, y + webcamHeight, x, y + webcamHeight - borderRadius);
+      ctx.quadraticCurveTo(
+        x,
+        y + webcamHeight,
+        x,
+        y + webcamHeight - borderRadius
+      );
       ctx.lineTo(x, y + borderRadius);
       ctx.quadraticCurveTo(x, y, x + borderRadius, y);
       ctx.closePath();
@@ -196,30 +208,33 @@ function App() {
           </div>
         </div>
       </section>
+      <section
+        ref={downloadSectionRef} // Reference for scrolling
+      >
+        {videoUrl && (
+          <section className="py-12 px-6 bg-gray-800">
+            <h2 className="text-3xl font-bold text-center mb-8">
+              Your Recording
+            </h2>
+            <div className="text-center">
+              <video
+                src={videoUrl}
+                controls
+                className="w-full max-w-2xl h-auto rounded-lg shadow-lg mx-auto"
+              />
+              <a
+                href={videoUrl}
+                download="recording.webm"
+                className="mt-6 inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+              >
+                <FaDownload className="mr-2 inline" />
+                Download
+              </a>
+            </div>
+          </section>
+        )}
+      </section>
 
-      {videoUrl && (
-        <section
-          className="py-12 px-6 bg-gray-800"
-          ref={downloadSectionRef} // Reference for scrolling
-        >
-          <h2 className="text-3xl font-bold text-center mb-8">Your Recording</h2>
-          <div className="text-center">
-            <video
-              src={videoUrl}
-              controls
-              className="w-full max-w-2xl h-auto rounded-lg shadow-lg mx-auto"
-            />
-            <a
-              href={videoUrl}
-              download="recording.webm"
-              className="mt-6 inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
-            >
-              <FaDownload className="mr-2 inline" />
-              Download
-            </a>
-          </div>
-        </section>
-      )}
       <section className="py-16 px-6">
         <h2 className="text-3xl font-bold text-center mb-8">
           Why Use Our Recorder?
