@@ -172,7 +172,12 @@ function App() {
           </button>
           <button
             onClick={stopRecording}
-            className="flex items-center bg-red-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-red-700 transition"
+            disabled={!isRecording}
+            className={`flex items-center font-semibold px-6 py-3 rounded-lg shadow-lg transition ${
+              isRecording
+                ? "bg-red-600 text-white hover:bg-red-700"
+                : "bg-gray-400 text-gray-200 cursor-not-allowed"
+            }`}
           >
             <FaStop className="mr-2" />
             Stop Recording
@@ -194,7 +199,7 @@ function App() {
               ref={screenVideoRef}
               autoPlay
               muted
-              className="w-full max-w-lg h-auto rounded-lg shadow-lg mx-auto"
+              className="w-full max-w-lg h-auto  bg-gray-800 rounded-lg shadow-lg mx-auto"
             />
           </div>
           <div className="text-center">
@@ -203,7 +208,7 @@ function App() {
               ref={webcamVideoRef}
               autoPlay
               muted
-              className="w-full max-w-lg h-auto rounded-lg shadow-lg mx-auto"
+              className="w-full max-w-lg h-auto aspect-auto bg-gray-800 rounded-lg shadow-lg mx-auto"
             />
           </div>
         </div>
@@ -211,12 +216,15 @@ function App() {
       <section
         ref={downloadSectionRef} // Reference for scrolling
       >
-        {videoUrl && (
-          <section className="py-12 px-6 bg-gray-800">
-            <h2 className="text-3xl font-bold text-center mb-8">
-              Your Recording
-            </h2>
-            <div className="text-center">
+        <section className="py-12 px-6 ">
+          <h2 className="text-3xl font-bold text-center mb-8">
+            Your Recording
+          </h2>
+          {!videoUrl&& (
+            <p className="flex justify-center bg-gray-800 py-16 rounded-lg "> No screen recordings! Press on start button to record.</p>
+          )}
+          {videoUrl && (
+            <div className="text-center bg-gray-800 py-4 rounded-lg ">
               <video
                 src={videoUrl}
                 controls
@@ -231,8 +239,8 @@ function App() {
                 Download
               </a>
             </div>
-          </section>
-        )}
+          )}
+        </section>
       </section>
 
       <section className="py-16 px-6">
