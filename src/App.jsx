@@ -221,7 +221,7 @@ function App() {
             Your Recording
           </h2>
           {!videoUrl&& (
-            <p className="flex justify-center bg-gray-800 py-16 rounded-lg "> No screen recordings! Press on start button to record.</p>
+            <p className="flex justify-center bg-gray-800 py-16 rounded-lg "> No screen recordings! Click on start button to record.</p>
           )}
           {videoUrl && (
             <div className="text-center bg-gray-800 py-4 rounded-lg ">
