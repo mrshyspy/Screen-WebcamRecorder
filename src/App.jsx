@@ -4,6 +4,8 @@ import { TfiLayoutLineSolid } from "react-icons/tfi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdCancel } from "react-icons/md";
 import { IoCameraReverse } from "react-icons/io5";
+import { FaVideo } from 'react-icons/fa';
+import Navbar from "./components/navbar";
 
 const App = () => {
   const webcamVideoRef = useRef(null);
@@ -27,22 +29,23 @@ const App = () => {
   });
 
   const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60)
-      .toString()
-      .padStart(2, "0");
+    const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
     const secs = (seconds % 60).toString().padStart(2, "0");
     return `${mins}:${secs}`;
   };
 
   const startTimer = () => {
-    // setRecordingTime(0);
+    stopTimer(); // clear any existing timer
     timerRef.current = setInterval(() => {
       setRecordingTime((prev) => prev + 1);
     }, 1000);
   };
 
   const stopTimer = () => {
-    clearInterval(timerRef.current);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
   };
 
   const startRecording = async () => {
@@ -52,7 +55,6 @@ const App = () => {
       canvas.width = 1920;
       canvas.height = 1080;
 
-      // Capture screen stream
       const screenStream = await navigator.mediaDevices.getDisplayMedia({
         video: { width: 1920, height: 1080 },
         audio: true,
@@ -62,7 +64,6 @@ const App = () => {
       screenVideo.srcObject = screenStream;
       await screenVideo.play();
 
-      // Capture webcam stream if visible
       let webcamStream = null;
       if (isWebcamVisible) {
         try {
@@ -79,7 +80,6 @@ const App = () => {
         }
       }
 
-      // Drawing the screen and webcam (if visible) on the canvas
       const drawFrame = () => {
         if (screenVideo.readyState >= 2) {
           ctx.drawImage(screenVideo, 0, 0, canvas.width, canvas.height);
@@ -92,13 +92,43 @@ const App = () => {
         ) {
           const webcamWidth = 320;
           const webcamHeight = 240;
+          const x = canvas.width - webcamWidth - 20;
+          const y = canvas.height - webcamHeight - 20;
+          const radius = 20;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(x + radius, y);
+          ctx.lineTo(x + webcamWidth - radius, y);
+          ctx.quadraticCurveTo(x + webcamWidth, y, x + webcamWidth, y + radius);
+          ctx.lineTo(x + webcamWidth, y + webcamHeight - radius);
+          ctx.quadraticCurveTo(
+            x + webcamWidth,
+            y + webcamHeight,
+            x + webcamWidth - radius,
+            y + webcamHeight
+          );
+          ctx.lineTo(x + radius, y + webcamHeight);
+          ctx.quadraticCurveTo(
+            x,
+            y + webcamHeight,
+            x,
+            y + webcamHeight - radius
+          );
+          ctx.lineTo(x, y + radius);
+          ctx.quadraticCurveTo(x, y, x + radius, y);
+          ctx.closePath();
+          ctx.clip();
+
           ctx.drawImage(
             webcamVideoRef.current,
-            canvas.width - webcamWidth - 20,
-            canvas.height - webcamHeight - 20,
+            x,
+            y,
             webcamWidth,
             webcamHeight
           );
+
+          ctx.restore();
         }
 
         animationFrameRef.current = requestAnimationFrame(drawFrame);
@@ -106,7 +136,6 @@ const App = () => {
 
       drawFrame();
 
-      // Capture the canvas stream and add audio tracks
       const canvasStream = canvas.captureStream(30);
       screenStream.getAudioTracks().forEach((track) => {
         canvasStream.addTrack(track);
@@ -137,6 +166,7 @@ const App = () => {
       setMediaRecorder(recorder);
       setIsRecording(true);
       setIsPaused(false);
+      setRecordingTime(0);
       startTimer();
     } catch (err) {
       alert("Error: " + err.message);
@@ -178,14 +208,9 @@ const App = () => {
     setRecordedChunks([]);
     setRecordingTime(0);
     setIsRecording(false);
-    webcamVideoRef.current.pause(); // Pauses the video
-
-    
+    stopTimer();
+    if (webcamVideoRef.current) webcamVideoRef.current.pause();
   };
-
-  // const toggleWebcam = () => {
-  //   setIsWebcamVisible((prev) => !prev);
-  // };
 
   useEffect(() => {
     if (recordedChunks.length > 0) {
@@ -199,12 +224,20 @@ const App = () => {
   useEffect(() => {
     return () => {
       stopRecording();
+      stopTimer(); // ensure timer is cleared on unmount
     };
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      
+       <div className="fixed bottom-6 left-6 z-50 group">
+      <button className="flex items-center bg-[#635bff] text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300 ease-in-out overflow-hidden w-12 group-hover:w-48">
+        <FaVideo className="w-5 h-5 mr-0 group-hover:mr-2 transition-all duration-300" />
+        <span className="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          Record a video
+        </span>
+      </button>
+    </div>
       <canvas ref={canvasRef} className="hidden" />
       <section className="bg-gradient-to-r from-green-500 to-blue-500 text-center py-16 px-6">
         <h1 className="text-4xl md:text-5xl font-bold">
@@ -240,7 +273,7 @@ const App = () => {
                   autoPlay
                   muted
                   style={{ display: isWebcamVisible ? "block" : "none" }}
-                  className="w-28 h-20 sm:w-36 sm:h-28 md:w-48 md:h-36 bg-black rounded-xl"
+                  className="w-28 h-20 sm:w-36 sm:h-28 md:w-48 md:h-36 bg-gray-900  rounded-xl"
                 />
                 <button
                   onClick={() => setIsWebcamVisible(false)}
