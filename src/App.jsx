@@ -5,256 +5,207 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdCancel } from "react-icons/md";
 import { IoCameraReverse } from "react-icons/io5";
 
+const App = () => {
+  const webcamVideoRef = useRef(null);
+  const screenVideoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const animationFrameRef = useRef(null);
 
-import Navbar from "./components/navbar";
-
-function App() {
   const [videoUrl, setVideoUrl] = useState(null);
-  const [recordingTime, setRecordingTime] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [isRecordingWindowOn, setRecordingWindow] = useState(false);
-  const [isWebcamEnabled, setIsWebcamEnabled] = useState(true); // toggle before recording
-  const [isWebcamVisible, setIsWebcamVisible] = useState(true); // cross/camera during recording
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [recordedChunks, setRecordedChunks] = useState([]);
+  const [isWebcamVisible, setIsWebcamVisible] = useState(true);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const timerRef = useRef(null);
 
-  const screenVideoRef = useRef(null);
-  const webcamVideoRef = useRef(null);
-  const mediaRecordersRef = useRef([]);
-  const downloadSectionRef = useRef(null);
+  const streamRefs = useRef({
+    screenStream: null,
+    webcamStream: null,
+    canvasStream: null,
+  });
 
-  useEffect(() => {
-    let timer;
-    if (isRecording && !isPaused) {
-      timer = setInterval(() => setRecordingTime((prev) => prev + 1), 1000);
-    }
-    return () => clearInterval(timer);
-  }, [isRecording, isPaused]);
-
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60)
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60)
       .toString()
       .padStart(2, "0");
-    const seconds = (time % 60).toString().padStart(2, "0");
-    return `${minutes}:${seconds}`;
+    const secs = (seconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
+  };
+
+  const startTimer = () => {
+    // setRecordingTime(0);
+    timerRef.current = setInterval(() => {
+      setRecordingTime((prev) => prev + 1);
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    clearInterval(timerRef.current);
   };
 
   const startRecording = async () => {
     try {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      canvas.width = 1920;
+      canvas.height = 1080;
+
+      // Capture screen stream
       const screenStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
+        video: { width: 1920, height: 1080 },
         audio: true,
       });
+      streamRefs.current.screenStream = screenStream;
+      const screenVideo = screenVideoRef.current;
+      screenVideo.srcObject = screenStream;
+      await screenVideo.play();
 
-      // const webcamStream = await navigator.mediaDevices.getUserMedia({
-      //   video: { width: 640, height: 480 },
-      //   audio: true,
-      // });
+      // Capture webcam stream if visible
       let webcamStream = null;
-      if (isWebcamEnabled) {
-        webcamStream = await navigator.mediaDevices.getUserMedia({
-          video: { width: 640, height: 480 },
-          audio: true,
-        });
-        webcamVideoRef.current.srcObject = webcamStream;
+      if (isWebcamVisible) {
+        try {
+          webcamStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          });
+          streamRefs.current.webcamStream = webcamStream;
+          const webcamVideo = webcamVideoRef.current;
+          webcamVideo.srcObject = webcamStream;
+          await webcamVideo.play();
+        } catch (err) {
+          console.warn("Webcam access denied");
+        }
       }
 
-      screenVideoRef.current.srcObject = screenStream;
-      webcamVideoRef.current.srcObject = webcamStream;
+      // Drawing the screen and webcam (if visible) on the canvas
+      const drawFrame = () => {
+        if (screenVideo.readyState >= 2) {
+          ctx.drawImage(screenVideo, 0, 0, canvas.width, canvas.height);
+        }
 
-      const canvasStream = createPictureInPictureStream(
-        screenStream,
-        webcamStream
-      );
-      const screenAudioTracks = screenStream.getAudioTracks();
-      const webcamAudioTracks = webcamStream.getAudioTracks();
+        if (
+          isWebcamVisible &&
+          webcamVideoRef.current &&
+          webcamVideoRef.current.readyState >= 2
+        ) {
+          const webcamWidth = 320;
+          const webcamHeight = 240;
+          ctx.drawImage(
+            webcamVideoRef.current,
+            canvas.width - webcamWidth - 20,
+            canvas.height - webcamHeight - 20,
+            webcamWidth,
+            webcamHeight
+          );
+        }
 
-      const audioContext = new AudioContext();
-      const destination = audioContext.createMediaStreamDestination();
+        animationFrameRef.current = requestAnimationFrame(drawFrame);
+      };
 
-      if (screenAudioTracks.length > 0) {
-        const screenSource = audioContext.createMediaStreamSource(
-          new MediaStream(screenAudioTracks)
-        );
-        screenSource.connect(destination);
-      }
+      drawFrame();
 
-      if (webcamAudioTracks.length > 0) {
-        const webcamSource = audioContext.createMediaStreamSource(
-          new MediaStream(webcamAudioTracks)
-        );
-        webcamSource.connect(destination);
-      }
-
-      const finalStream = new MediaStream([
-        ...canvasStream.getVideoTracks(),
-        ...destination.stream.getAudioTracks(),
-      ]);
-
-      const mediaRecorder = new MediaRecorder(finalStream, {
-        mimeType: "video/webm",
+      // Capture the canvas stream and add audio tracks
+      const canvasStream = canvas.captureStream(30);
+      screenStream.getAudioTracks().forEach((track) => {
+        canvasStream.addTrack(track);
       });
 
-      const chunks = [];
+      if (isWebcamVisible && webcamStream) {
+        webcamStream.getAudioTracks().forEach((track) => {
+          canvasStream.addTrack(track);
+        });
+      }
 
-      mediaRecorder.ondataavailable = (e) => {
+      streamRefs.current.canvasStream = canvasStream;
+
+      const chunks = [];
+      const recorder = new MediaRecorder(canvasStream, {
+        mimeType: "video/webm;codecs=vp9",
+      });
+
+      recorder.ondataavailable = (e) => {
         if (e.data.size > 0) chunks.push(e.data);
       };
 
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: "video/webm" });
-        const url = URL.createObjectURL(blob);
-        setVideoUrl(url);
-        downloadSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+      recorder.onstop = () => {
+        setRecordedChunks(chunks);
       };
 
-      mediaRecorder.start();
-      mediaRecordersRef.current = [mediaRecorder];
+      recorder.start(1000);
+      setMediaRecorder(recorder);
       setIsRecording(true);
       setIsPaused(false);
-      setRecordingTime(0);
-      console.log("Recording started");
+      startTimer();
     } catch (err) {
-      console.error("Recording error:", err);
-      alert(
-        "Failed to start recording. Please check permissions and try again."
-      );
-    }
-  };
-
-  const togglePause = () => {
-    const recorder = mediaRecordersRef.current[0];
-    if (!recorder) return;
-
-    if (recorder.state === "recording") {
-      recorder.pause();
-      setIsPaused(true);
-    } else if (recorder.state === "paused") {
-      recorder.resume();
-      setIsPaused(false);
+      alert("Error: " + err.message);
     }
   };
 
   const stopRecording = () => {
-    mediaRecordersRef.current.forEach((recorder) => recorder.stop());
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+      mediaRecorder.stop();
+    }
+
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+
+    const { screenStream, webcamStream } = streamRefs.current;
+    screenStream?.getTracks().forEach((t) => t.stop());
+    webcamStream?.getTracks().forEach((t) => t.stop());
+
     setIsRecording(false);
-    setIsPaused(false);
-    setRecordingTime(0);
+    stopTimer();
+  };
+
+  const togglePause = () => {
+    if (!mediaRecorder) return;
+    if (mediaRecorder.state === "recording") {
+      mediaRecorder.pause();
+      setIsPaused(true);
+      stopTimer();
+    } else if (mediaRecorder.state === "paused") {
+      mediaRecorder.resume();
+      setIsPaused(false);
+      startTimer();
+    }
   };
 
   const deleteRecording = () => {
     setVideoUrl(null);
-    setIsRecording(false);
+    setRecordedChunks([]);
     setRecordingTime(0);
+    setIsRecording(false);
+    webcamVideoRef.current.pause(); // Pauses the video
 
-    if (screenVideoRef.current) {
-      screenVideoRef.current.srcObject
-        ?.getTracks()
-        .forEach((track) => track.stop());
-      screenVideoRef.current.srcObject = null;
-    }
-
-    if (webcamVideoRef.current) {
-      webcamVideoRef.current.srcObject
-        ?.getTracks()
-        .forEach((track) => track.stop());
-      webcamVideoRef.current.srcObject = null;
-    }
+    
   };
 
-  const createPictureInPictureStream = (screenStream, webcamStream) => {
-    const webcamEnabled = webcamStream && isWebcamVisible;
+  // const toggleWebcam = () => {
+  //   setIsWebcamVisible((prev) => !prev);
+  // };
 
-    const canvas = document.createElement("canvas");
-    canvas.width = 1920;
-    canvas.height = 1080;
-    const ctx = canvas.getContext("2d");
+  useEffect(() => {
+    if (recordedChunks.length > 0) {
+      const blob = new Blob(recordedChunks, { type: "video/webm" });
+      const url = URL.createObjectURL(blob);
+      setVideoUrl(url);
+      setRecordedChunks([]);
+    }
+  }, [recordedChunks]);
 
-    const screenTrack = screenStream.getVideoTracks()[0];
-    const webcamTrack = webcamStream.getVideoTracks()[0];
-    const canvasStream = canvas.captureStream(30);
-
-    const padding = 16;
-    const borderRadius = 20;
-    const borderColor = "white";
-    const borderWidth = 5;
-    const webcamWidth = 320;
-    const webcamHeight = 240;
-
-    const screenVideo = document.createElement("video");
-    const webcamVideo = document.createElement("video");
-
-    screenVideo.srcObject = screenStream;
-    webcamVideo.srcObject = webcamStream;
-
-    screenVideo.muted = true;
-    webcamVideo.muted = true;
-
-    screenVideo
-      .play()
-      .catch((err) => console.warn("Screen video play error", err));
-    webcamVideo
-      .play()
-      .catch((err) => console.warn("Webcam video play error", err));
-
-    const drawStreams = () => {
-      if (screenVideo.readyState >= 2) {
-        ctx.drawImage(screenVideo, 0, 0, canvas.width, canvas.height);
-      }
-
-      if (webcamVideo.readyState >= 2) {
-        const x = canvas.width - webcamWidth - padding;
-        const y = canvas.height - webcamHeight - padding;
-
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(x + borderRadius, y);
-        ctx.lineTo(x + webcamWidth - borderRadius, y);
-        ctx.quadraticCurveTo(
-          x + webcamWidth,
-          y,
-          x + webcamWidth,
-          y + borderRadius
-        );
-        ctx.lineTo(x + webcamWidth, y + webcamHeight - borderRadius);
-        ctx.quadraticCurveTo(
-          x + webcamWidth,
-          y + webcamHeight,
-          x + webcamWidth - borderRadius,
-          y + webcamHeight
-        );
-        ctx.lineTo(x + borderRadius, y + webcamHeight);
-        ctx.quadraticCurveTo(
-          x,
-          y + webcamHeight,
-          x,
-          y + webcamHeight - borderRadius
-        );
-        ctx.lineTo(x, y + borderRadius);
-        ctx.quadraticCurveTo(x, y, x + borderRadius, y);
-        ctx.closePath();
-        ctx.lineWidth = borderWidth;
-        ctx.strokeStyle = borderColor;
-        ctx.stroke();
-        ctx.clip();
-        ctx.drawImage(webcamVideo, x, y, webcamWidth, webcamHeight);
-        ctx.restore();
-      }
+  useEffect(() => {
+    return () => {
+      stopRecording();
     };
-
-    const interval = setInterval(drawStreams, 1000 / 30);
-
-    canvasStream.addEventListener("inactive", () => {
-      clearInterval(interval);
-      screenTrack.stop();
-      webcamTrack.stop();
-    });
-
-    return canvasStream;
-  };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Navbar />
+      <canvas ref={canvasRef} className="hidden" />
       <section className="bg-gradient-to-r from-green-500 to-blue-500 text-center py-16 px-6">
         <h1 className="text-4xl md:text-5xl font-bold">
           Screen & Webcam Recorder
@@ -265,33 +216,37 @@ function App() {
         </p>
       </section>
 
-      <section className=" py-12 px-4 sm:px-6 lg:px-8">
+      <section className="py-12 px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
           Live Preview (Picture-in-Picture)
         </h2>
 
-        <div className="  relative mx-auto w-5/6 max-w-6xl border-4 border-gray-600 rounded-xl overflow-hidden">
+        <div className="relative mx-auto w-5/6 max-w-6xl border-4 border-gray-600 rounded-xl overflow-hidden">
           <video
             ref={screenVideoRef}
             autoPlay
             muted
             className="w-full h-auto bg-gray-800 rounded-lg shadow-xl"
           />
-          <div className="absolute bottom-4 right-4">
+          <div
+            className={`absolute bottom-4 right-4  ${
+              !isRecording ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+          >
             {isWebcamVisible ? (
               <>
                 <video
                   ref={webcamVideoRef}
                   autoPlay
                   muted
+                  style={{ display: isWebcamVisible ? "block" : "none" }}
                   className="w-28 h-20 sm:w-36 sm:h-28 md:w-48 md:h-36 bg-black rounded-xl"
                 />
                 <button
                   onClick={() => setIsWebcamVisible(false)}
-                  className="absolute -top-1 -right-3  text-white rounded-full px-2 text-lg md:text-xl"
+                  className="absolute -top-1 -right-3 text-white rounded-full px-2 text-lg md:text-xl"
                 >
                   <MdCancel />
-
                 </button>
               </>
             ) : (
@@ -300,23 +255,22 @@ function App() {
                 className="w-7 h-7 md:w-10 md:h-10 bg-black bg-opacity-60 rounded-full flex items-center justify-center text-white text-lg md:text-2xl"
               >
                 <IoCameraReverse />
-
               </button>
             )}
           </div>
 
-          {/* Recording Controls */}
+          {/* Controls */}
           <div className="absolute left-1/2 bottom-0 mb-4 -translate-x-1/2 flex flex-wrap justify-center gap-3 sm:gap-4 px-2 sm:px-6">
             {!isRecording ? (
               <button
                 onClick={startRecording}
-                className="flex items-center bg-white text-green-600 font-semibold px-4 py-2 md:px-5 md:py-2 rounded-full shadow-lg hover:bg-green-50 transition text-sm sm:text-base"
+                className="flex items-center bg-white text-green-600 font-semibold px-3 py-2 md:px-5 md:py-3 rounded-full shadow-lg hover:bg-green-50 transition text-sm sm:text-base"
               >
                 <FaPlay className="mr-2 text-xs md:text-sm" />
                 Start Recording
               </button>
             ) : (
-              <div className="flex items-center gap-3 bg-gray-800 bg-opacity-90 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-xl animate-fade-in text-xs md:text-base">
+              <div className="flex items-center gap-3 bg-gray-800 bg-opacity-90 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-xl text-xs md:text-base">
                 <button
                   onClick={stopRecording}
                   className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition"
@@ -324,7 +278,6 @@ function App() {
                 >
                   <FaStop />
                 </button>
-
                 <button
                   onClick={togglePause}
                   className="text-white p-2 rounded-full transition"
@@ -332,13 +285,10 @@ function App() {
                 >
                   {isPaused ? <FaPlay /> : <FaPause />}
                 </button>
-
                 <span className="font-mono">{formatTime(recordingTime)}</span>
                 <span className="rotate-90">
-                  {" "}
-                  <TfiLayoutLineSolid />{" "}
+                  <TfiLayoutLineSolid />
                 </span>
-
                 <button
                   onClick={startRecording}
                   title="Record again"
@@ -346,7 +296,6 @@ function App() {
                 >
                   <FaRedo />
                 </button>
-
                 <button
                   onClick={deleteRecording}
                   title="Delete recording"
@@ -359,24 +308,25 @@ function App() {
           </div>
         </div>
       </section>
+
       {videoUrl && (
-        <div
-          ref={downloadSectionRef}
-          className="mt-12 flex flex-col items-center gap-4"
-        >
-          <video src={videoUrl} controls className="w-full max-w-3xl" />
+        <section className="text-center mt-12">
+          <h3 className="text-xl font-semibold mb-4">
+            Download Your Recording
+          </h3>
+          <video controls src={videoUrl} className="w-4/5 mx-auto mb-4" />
           <a
             href={videoUrl}
             download="recording.webm"
-            className="flex items-center bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-700 transition"
+            className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-3 rounded-full transition"
           >
             <FaDownload className="mr-2" />
             Download Recording
           </a>
-        </div>
+        </section>
       )}
     </div>
   );
-}
+};
 
 export default App;
