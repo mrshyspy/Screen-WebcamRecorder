@@ -204,7 +204,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <Navbar />
+      
       <canvas ref={canvasRef} className="hidden" />
       <section className="bg-gradient-to-r from-green-500 to-blue-500 text-center py-16 px-6">
         <h1 className="text-4xl md:text-5xl font-bold">
