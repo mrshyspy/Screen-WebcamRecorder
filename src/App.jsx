@@ -5,7 +5,6 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdCancel } from "react-icons/md";
 import { IoCameraReverse } from "react-icons/io5";
 import { FaVideo } from 'react-icons/fa';
-import Navbar from "./components/navbar";
 
 const App = () => {
   const webcamVideoRef = useRef(null);
