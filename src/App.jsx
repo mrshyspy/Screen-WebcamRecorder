@@ -4,7 +4,9 @@ import { TfiLayoutLineSolid } from "react-icons/tfi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdCancel } from "react-icons/md";
 import { IoCameraReverse } from "react-icons/io5";
-import { FaVideo } from 'react-icons/fa';
+import { FaVideo } from "react-icons/fa";
+import {FeaturesSection } from "./components/FeaturesSection"
+import { Navbarr } from "./components/navbar";
 
 const App = () => {
   const webcamVideoRef = useRef(null);
@@ -19,6 +21,7 @@ const App = () => {
   const [recordedChunks, setRecordedChunks] = useState([]);
   const [isWebcamVisible, setIsWebcamVisible] = useState(true);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [isRecordingWindowOn, setIsRecordingWindowOn] = useState(false);
   const timerRef = useRef(null);
 
   const streamRefs = useRef({
@@ -28,7 +31,9 @@ const App = () => {
   });
 
   const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const mins = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
     const secs = (seconds % 60).toString().padStart(2, "0");
     return `${mins}:${secs}`;
   };
@@ -229,31 +234,24 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-       <div className="fixed bottom-6 left-6 z-50 group">
-      <button className="flex items-center bg-[#635bff] text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300 ease-in-out overflow-hidden w-12 group-hover:w-48">
-        <FaVideo className="w-5 h-5 mr-0 group-hover:mr-2 transition-all duration-300" />
-        <span className="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          Record a video
-        </span>
-      </button>
-    </div>
-      <canvas ref={canvasRef} className="hidden" />
-      <section className="bg-gradient-to-r from-green-500 to-blue-500 text-center py-16 px-6">
-        <h1 className="text-4xl md:text-5xl font-bold">
-          Screen & Webcam Recorder
-        </h1>
-        <p className="text-lg md:text-xl text-gray-100 mt-4">
-          Record your screen with a webcam overlay and download high-quality
-          videos.
-        </p>
-      </section>
-
-      <section className="py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
-          Live Preview (Picture-in-Picture)
-        </h2>
-
-        <div className="relative mx-auto w-5/6 max-w-6xl border-4 border-gray-600 rounded-xl overflow-hidden">
+      
+      <Navbarr/>
+      <FeaturesSection/>
+      {!isRecordingWindowOn ? (
+        <div className="fixed bottom-6 left-6 z-50 group">
+        <button
+          onClick={() => setIsRecordingWindowOn(true)}
+          className="flex items-center justify-start bg-[#635bff] text-white rounded-full shadow-lg overflow-hidden transition-all duration-300 ease-in-out w-12 group-hover:w-48 h-12 pl-4"
+        >
+          <FaVideo className="w-5 h-5 flex-shrink-0 group-hover:mr-2" />
+          <span className="ml-2 mr-0 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            Record a video
+          </span>
+        </button>
+      </div>
+      
+      ) : (
+        <div className=" fixed top-1/2 left-1/2 transition-all duration-800 ease-in-out transform -translate-x-1/2 -translate-y-1/2 max-h-screen z-50 mx-auto w-3/4 max-w-6xl border-4 border-gray-600 rounded-xl overflow-hidden">
           <video
             ref={screenVideoRef}
             autoPlay
@@ -272,11 +270,11 @@ const App = () => {
                   autoPlay
                   muted
                   style={{ display: isWebcamVisible ? "block" : "none" }}
-                  className="w-28 h-20 sm:w-36 sm:h-28 md:w-48 md:h-36 bg-gray-900  rounded-xl"
+                  className=" w-28 h-20 sm:w-36 sm:h-28 md:w-48 md:h-36  bg-gray-900 transition-all duration-400 ease-in-out  rounded-xl"
                 />
                 <button
                   onClick={() => setIsWebcamVisible(false)}
-                  className="absolute -top-1 -right-3 text-white rounded-full px-2 text-lg md:text-xl"
+                  className="  absolute -top-1 -right-3 text-white   rounded-full px-2 text-lg md:text-xl"
                 >
                   <MdCancel />
                 </button>
@@ -284,7 +282,7 @@ const App = () => {
             ) : (
               <button
                 onClick={() => setIsWebcamVisible(true)}
-                className="w-7 h-7 md:w-10 md:h-10 bg-black bg-opacity-60 rounded-full flex items-center justify-center text-white text-lg md:text-2xl"
+                className=" transition-all duration-200 ease-in-out w-7 h-7 md:w-10 md:h-10 bg-black bg-opacity-60 rounded-full flex items-center justify-center text-white text-lg md:text-2xl"
               >
                 <IoCameraReverse />
               </button>
@@ -296,7 +294,7 @@ const App = () => {
             {!isRecording ? (
               <button
                 onClick={startRecording}
-                className="flex items-center bg-white text-green-600 font-semibold px-3 py-2 md:px-5 md:py-3 rounded-full shadow-lg hover:bg-green-50 transition text-sm sm:text-base"
+                className="flex items-center transition-all duration-200 ease-in-out bg-white text-green-600 font-semibold px-3 py-2 md:px-5 md:py-3 rounded-full shadow-lg hover:bg-green-50  text-sm sm:text-base"
               >
                 <FaPlay className="mr-2 text-xs md:text-sm" />
                 Start Recording
@@ -339,6 +337,22 @@ const App = () => {
             )}
           </div>
         </div>
+      )}
+      <canvas ref={canvasRef} className="hidden" />
+      <section className="bg-gradient-to-r from-green-500 to-blue-500 text-center py-16 px-6">
+        <h1 className="text-4xl md:text-5xl font-bold">
+          Screen & Webcam Recorder
+        </h1>
+        <p className="text-lg md:text-xl text-gray-100 mt-4">
+          Record your screen with a webcam overlay and download high-quality
+          videos.
+        </p>
+      </section>
+
+      <section className=" relative py-12 px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+          Live Preview (Picture-in-Picture)
+        </h2>
       </section>
 
       {videoUrl && (
