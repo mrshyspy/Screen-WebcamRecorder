@@ -7,6 +7,8 @@ import { IoCameraReverse } from "react-icons/io5";
 import { FaVideo } from "react-icons/fa";
 import {FeaturesSection } from "./components/FeaturesSection"
 import { Navbarr } from "./components/Navbarr";
+import { HowToUse } from "./components/HowToUse";
+import { MadeFor } from "./components/MadeFor";
 
 const App = () => {
   const webcamVideoRef = useRef(null);
@@ -237,6 +239,8 @@ const App = () => {
       
       <Navbarr/>
       <FeaturesSection/>
+      <HowToUse/>
+      <MadeFor/>
       {!isRecordingWindowOn ? (
         <div className="fixed bottom-6 left-6 z-50 group">
         <button
