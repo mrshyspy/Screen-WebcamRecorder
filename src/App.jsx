@@ -6,7 +6,7 @@ import { MdCancel } from "react-icons/md";
 import { IoCameraReverse } from "react-icons/io5";
 import { FaVideo } from "react-icons/fa";
 import {FeaturesSection } from "./components/FeaturesSection"
-import { Navbarr } from "./components/navbar";
+import { Navbarr } from "./components/Navbarr";
 
 const App = () => {
   const webcamVideoRef = useRef(null);

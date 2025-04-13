@@ -12,6 +12,7 @@ import {
 } from "./ui/resizable-navbar";
 import { useState } from "react";
 import { HeroSectionOne } from "./Hero";
+
 export function Navbarr() {
   const navItems = [
     {
