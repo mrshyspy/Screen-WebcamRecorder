@@ -4,32 +4,45 @@ import { TracingBeam } from "./ui/tracing-beam";
 
 export function MadeFor() {
   return (
-    <TracingBeam className="px-6">
-      <div className="max-w-2xl mx-auto antialiased pt-4 relative">
+    <div>
+      <h2 className="text-center text-5xl font-semibold py-20 text-slate-700">
+        Made for everyone
+      </h2>
+
+      <div className="max-w-5xl mx-auto antialiased pt-4 relative">
         {dummyContent.map((item, index) => (
-          <div key={`content-${index}`} className="mb-10">
-            <h2 className="bg-black text-white rounded-full text-sm w-fit px-4 py-1 mb-4">
-              {item.badge}
-            </h2>
-
-            <p className="text-xl mb-4">{item.title}</p>
-
+          <div key={`content-${index}`} className="mb-24 md:mb-32 ">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-              {item?.image && (
-                <img
-                  src={item.image}
-                  alt="blog thumbnail"
-                  className="rounded-lg w-full h-auto object-cover"
-                />
-              )}
-              <div className="prose prose-sm dark:prose-invert text-sm">
-                {item.description}
+              {/* Image */}
+              <div
+                className={` mx-10 ${index % 2 === 0 ? "md:order-1" : "md:order-2"}`}
+              >
+                {item?.image && (
+                  <img
+                    src={item.image}
+                    alt="blog thumbnail"
+                    className="rounded-3xl w-full h-auto  object-cover"
+                  />
+                )}
+              </div>
+
+              {/* Text Content (Badge, Heading, Description) */}
+              <div
+                className={`flex flex-col justify-center mx-10  ${
+                  index % 2 === 0 ? "md:order-2 md:ml-10" : "md:order-1 "
+                }`}
+              >
+                
+                <p className="text-xl font-semibold mb-4">{item.title}</p>
+                <div className="prose prose-sm dark:prose-invert text-sm">
+                  {item.description}
+                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
-    </TracingBeam>
+    </div>
   );
 }
 
@@ -45,10 +58,6 @@ const dummyContent = [
         <p>
           Dolor minim irure ut Lorem proident. Ipsum do pariatur est ad ad
           exercitation ad quis ex cupidatat cupidatat occaecat adipisicing.
-        </p>
-        <p>
-          Tempor quis dolor veniam quis dolor. Sit reprehenderit eiusmod
-          reprehenderit deserunt amet laborum consequat adipisicing officia qui
         </p>
       </>
     ),

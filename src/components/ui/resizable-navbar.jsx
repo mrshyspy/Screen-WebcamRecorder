@@ -9,16 +9,17 @@ import { cn } from "../../utils/cn"; // Or use 'clsx' if needed
 export const Navbar = ({ children, className }) => {
   const ref = useRef(null);
   const { scrollY } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    setVisible(latest > 100);
+    if (latest > 100) setVisible(true);
   });
+  
 
   return (
     <motion.div
       ref={ref}
-      className={cn("sticky inset-x-0 top-20 z-40 w-full", className)}
+      className={cn("sticky inset-x-0 top-6 z-40 w-full", className)}
     >
       {React.Children.map(children, (child) =>
         React.isValidElement(child) ? React.cloneElement(child, { visible }) : child
@@ -97,7 +98,12 @@ export const MobileNav = ({ children, className, visible }) => {
         borderRadius: visible ? "4px" : "2rem",
         y: visible ? 20 : 0,
       }}
-      transition={{ type: "spring", stiffness: 200, damping: 50 }}
+      transition={{
+        type: "spring",
+        stiffness: 100, // Lower stiffness for smoother effect
+        damping: 25, // Increase damping for smoother and slower transition
+        ease: "easeOut", // Use ease-out for a more gradual stop
+      }}
       className={cn(
         "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden",
         visible && "bg-white/80 dark:bg-neutral-950/80",
