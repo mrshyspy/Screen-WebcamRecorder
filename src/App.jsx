@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
-import { FaPlay, FaStop, FaPause, FaDownload, FaRedo, FaVideo } from "react-icons/fa";
+import React, { useState, useRef, useEffect } from "react"; 
+import { FaPlay, FaStop, FaPause, FaDownload, FaRedo } from "react-icons/fa";
 import { TfiLayoutLineSolid } from "react-icons/tfi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdCancel } from "react-icons/md";
 import { IoCameraReverse } from "react-icons/io5";
+import { FaVideo } from "react-icons/fa";
 import { FeaturesSection } from "./components/FeaturesSection";
 import { Navbarr } from "./components/Navbarr";
 import { HowToUse } from "./components/HowToUse";
@@ -114,12 +115,7 @@ const App = () => {
             y + webcamHeight
           );
           ctx.lineTo(x + radius, y + webcamHeight);
-          ctx.quadraticCurveTo(
-            x,
-            y + webcamHeight,
-            x,
-            y + webcamHeight - radius
-          );
+          ctx.quadraticCurveTo(x, y + webcamHeight, x, y + webcamHeight - radius);
           ctx.lineTo(x, y + radius);
           ctx.quadraticCurveTo(x, y, x + radius, y);
           ctx.closePath();
@@ -234,6 +230,120 @@ const App = () => {
       <MadeFor />
       <CallToAction />
 
+      {!isRecordingWindowOn ? (
+        <div className="fixed bottom-6 left-6 z-50 group">
+          <button
+            onClick={() => setIsRecordingWindowOn(true)}
+            className="flex items-center justify-start bg-[#635bff] text-white rounded-full shadow-lg overflow-hidden transition-all duration-300 ease-in-out w-12 group-hover:w-48 h-12 pl-4"
+          >
+            <FaVideo className="w-5 h-5 flex-shrink-0 group-hover:mr-2" />
+            <span className="ml-2 mr-0 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              Record a video
+            </span>
+          </button>
+        </div>
+      ) : (
+        <div className="fixed top-1/2 left-1/2 transition-all duration-800 ease-in-out transform -translate-x-1/2 -translate-y-1/2 max-h-screen z-50 mx-auto w-3/4 max-w-6xl border-4 border-gray-600 rounded-xl overflow-hidden">
+
+          {/* Cancel Button */}
+          <button
+            onClick={() => setIsRecordingWindowOn(false)}
+            className="absolute top-3 right-3 bg-black bg-opacity-60 hover:bg-opacity-80 text-white p-2 rounded-full z-50"
+            title="Cancel / Close"
+          >
+            <MdCancel className="text-xl md:text-2xl" />
+          </button>
+
+          <video
+            ref={screenVideoRef}
+            autoPlay
+            muted
+            className="w-full h-auto bg-gray-800 rounded-lg shadow-xl"
+          />
+
+          <div
+            className={`absolute bottom-4 right-4 ${
+              !isRecording ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+          >
+            {isWebcamVisible ? (
+              <>
+                <video
+                  ref={webcamVideoRef}
+                  autoPlay
+                  muted
+                  style={{ display: isWebcamVisible ? "block" : "none" }}
+                  className="w-28 h-20 sm:w-36 sm:h-28 md:w-48 md:h-36 bg-gray-900 rounded-xl"
+                />
+                <button
+                  onClick={() => setIsWebcamVisible(false)}
+                  className="absolute -top-1 -right-3 text-white rounded-full px-2 text-lg md:text-xl"
+                >
+                  <MdCancel />
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setIsWebcamVisible(true)}
+                className="w-7 h-7 md:w-10 md:h-10 bg-black bg-opacity-60 rounded-full flex items-center justify-center text-white text-lg md:text-2xl"
+              >
+                <IoCameraReverse />
+              </button>
+            )}
+          </div>
+
+          {/* Controls */}
+          <div className="absolute left-1/2 bottom-0 mb-4 -translate-x-1/2 flex flex-wrap justify-center gap-3 sm:gap-4 px-2 sm:px-6">
+            {!isRecording ? (
+              <button
+                onClick={startRecording}
+                className="flex items-center bg-white text-green-600 font-semibold px-3 py-2 md:px-5 md:py-3 rounded-full shadow-lg hover:bg-green-50 text-sm sm:text-base"
+              >
+                <FaPlay className="mr-2 text-xs md:text-sm" />
+                Start Recording
+              </button>
+            ) : (
+              <div className="flex items-center gap-3 bg-gray-800 bg-opacity-90 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-xl text-xs md:text-base">
+                <button
+                  onClick={stopRecording}
+                  className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition"
+                  title="Stop Recording"
+                >
+                  <FaStop />
+                </button>
+                <button
+                  onClick={togglePause}
+                  className="text-white p-2 rounded-full transition"
+                  title={isPaused ? "Resume" : "Pause"}
+                >
+                  {isPaused ? <FaPlay /> : <FaPause />}
+                </button>
+                <span className="font-mono">{formatTime(recordingTime)}</span>
+                <span className="rotate-90">
+                  <TfiLayoutLineSolid />
+                </span>
+                <button
+                  onClick={startRecording}
+                  title="Record again"
+                  className="text-white p-2 rounded-full"
+                >
+                  <FaRedo />
+                </button>
+                <button
+                  onClick={deleteRecording}
+                  title="Delete recording"
+                  className="text-white p-2 rounded-full"
+                >
+                  <RiDeleteBin6Line />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <canvas ref={canvasRef} className="hidden" />
+
       <section className="bg-gradient-to-r from-green-500 to-blue-500 text-center py-16 px-6">
         <h1 className="text-4xl md:text-5xl font-bold">Screen & Webcam Recorder</h1>
         <p className="text-lg md:text-xl text-gray-100 mt-4">
@@ -242,84 +352,9 @@ const App = () => {
       </section>
 
       <section className="relative py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">Live Preview (Picture-in-Picture)</h2>
-
-        {!isRecordingWindowOn ? (
-          <div className="text-center mb-8">
-            <button
-              onClick={() => setIsRecordingWindowOn(true)}
-              className="inline-flex items-center bg-[#635bff] text-white px-6 py-3 rounded-full hover:bg-indigo-700 transition"
-            >
-              <FaVideo className="mr-2" />
-              Record a Video
-            </button>
-          </div>
-        ) : (
-          <div className="mx-auto w-full md:w-4/5 max-w-6xl border-2 border-gray-400 bg-white rounded-xl shadow-md p-4 space-y-4">
-            <video
-              ref={screenVideoRef}
-              autoPlay
-              muted
-              className="w-full h-auto bg-gray-800 rounded-lg shadow-xl"
-            />
-            <div className="flex justify-end space-x-4">
-              {isWebcamVisible ? (
-                <div className="relative">
-                  <video
-                    ref={webcamVideoRef}
-                    autoPlay
-                    muted
-                    className="w-40 h-28 bg-gray-900 rounded-xl"
-                  />
-                  <button
-                    onClick={() => setIsWebcamVisible(false)}
-                    className="absolute top-0 right-0 text-white bg-black bg-opacity-50 p-1 rounded-full"
-                  >
-                    <MdCancel />
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setIsWebcamVisible(true)}
-                  className="bg-black bg-opacity-50 text-white p-2 rounded-full"
-                >
-                  <IoCameraReverse />
-                </button>
-              )}
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-              {!isRecording ? (
-                <button
-                  onClick={startRecording}
-                  className="flex items-center bg-white text-green-600 font-semibold px-4 py-2 rounded-full shadow hover:bg-green-50"
-                >
-                  <FaPlay className="mr-2" />
-                  Start Recording
-                </button>
-              ) : (
-                <div className="flex items-center gap-3 bg-gray-800 bg-opacity-90 text-white px-4 py-2 rounded-full">
-                  <button onClick={stopRecording} className="bg-red-600 hover:bg-red-700 p-2 rounded-full">
-                    <FaStop />
-                  </button>
-                  <button onClick={togglePause} className="p-2 rounded-full">
-                    {isPaused ? <FaPlay /> : <FaPause />}
-                  </button>
-                  <span className="font-mono">{formatTime(recordingTime)}</span>
-                  <span className="rotate-90">
-                    <TfiLayoutLineSolid />
-                  </span>
-                  <button onClick={startRecording} className="p-2 rounded-full">
-                    <FaRedo />
-                  </button>
-                  <button onClick={deleteRecording} className="p-2 rounded-full">
-                    <RiDeleteBin6Line />
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+          Live Preview (Picture-in-Picture)
+        </h2>
       </section>
 
       {videoUrl && (
@@ -336,8 +371,6 @@ const App = () => {
           </a>
         </section>
       )}
-
-      <canvas ref={canvasRef} className="hidden" />
     </div>
   );
 };
