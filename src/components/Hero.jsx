@@ -84,7 +84,7 @@ export function HeroSectionOne() {
         >
           <div className="w-full overflow-hidden rounded-xl border border-gray-300">
             <img
-              src="https://i.imgur.com/DqkfNNp.jpeg"
+              src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=3540&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8f"
               alt="Landing page preview"
               className="aspect-[16/9] h-auto w-full object-cover"
               height={1000}
