@@ -74,7 +74,7 @@ export function Navbarr() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
                 className="w-full">
-                Book a call
+                start using
               </NavbarButton>
             </div>
           </MobileNavMenu>
