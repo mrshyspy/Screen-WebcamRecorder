@@ -12,9 +12,7 @@ import { MadeFor } from "../components/MadeFor";
 import { Timeline } from "../components/ui/timeline";
 import CallToAction from "../components/CallToAction";
 
-import { useNavigate } from 'react-router-dom';
-
-
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const webcamVideoRef = useRef(null);
@@ -39,7 +37,6 @@ const Home = () => {
   });
 
   const navigate = useNavigate();
-
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60)
@@ -233,10 +230,8 @@ const Home = () => {
       const url = URL.createObjectURL(blob);
       setVideoUrl(url);
       setRecordedChunks([]);
-      navigate('/RecordedVideo', { state: { videoUrl: url } });
-
+      navigate("/RecordedVideo", { state: { videoUrl: url } });
     }
-
   }, [recordedChunks]);
 
   useEffect(() => {
@@ -252,15 +247,34 @@ const Home = () => {
       }
     };
   }, [videoUrl]);
-  
+  //   useEffect(() => {
+  //   if (isRecordingWindowOn) {
+  //     document.body.classList.add("overflow-hidden");
+  //   } else {
+  //     document.body.classList.remove("overflow-hidden");
+  //   }
+
+  //   // Clean up on unmount
+  //   return () => {
+  //     document.body.classList.remove("overflow-hidden");
+  //   };
+  // }, [isRecordingWindowOn]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbarr />
-      <FeaturesSection />
-      <Timeline />
-      <MadeFor />
-      <CallToAction />
+    <div className="min-h-screen overflow-hidden bg-gray-100">
+      <div
+        className={`${
+          isRecordingWindowOn
+            ? " pointer-events-none blur-sm scale-100 transition-all duration-300"
+            : "transition-all duration-300"
+        }`}
+      >
+        <Navbarr />
+        <FeaturesSection />
+        <Timeline />
+        <MadeFor />
+        <CallToAction />
+      </div>
       {!isRecordingWindowOn ? (
         <div className="fixed bottom-6 left-6 z-50 group">
           <button
@@ -282,12 +296,14 @@ const Home = () => {
           >
             <MdCancel className="text-xl md:text-2xl" />
           </button>
-          <video
-            ref={screenVideoRef}
-            autoPlay
-            muted
-            className="w-full h-auto bg-gray-800 rounded-lg shadow-xl"
-          />
+               <video
+        ref={screenVideoRef}
+        autoPlay
+        muted
+        poster="/assets/poster.jpg" // ✅ Static image before video plays
+        className="w-full h-auto  rounded-lg shadow-xl"
+      />
+
           <div
             className={`absolute bottom-4 right-4  ${
               !isRecording ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -332,12 +348,12 @@ const Home = () => {
             ) : (
               <div className="flex items-center gap-3 bg-gray-800 bg-opacity-90 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-xl text-xs md:text-base">
                 <button
-                    onClick={stopRecording}
-                    className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition"
-                    title="Stop Recording"
-                  >
-                    <FaStop />
-                  </button>
+                  onClick={stopRecording}
+                  className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition"
+                  title="Stop Recording"
+                >
+                  <FaStop />
+                </button>
                 <button
                   onClick={togglePause}
                   className="text-white p-2 rounded-full transition"
