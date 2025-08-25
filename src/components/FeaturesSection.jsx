@@ -3,7 +3,7 @@
 import {
   Download,
   MonitorSmartphone,
-  PencilRuler,
+  Feather,
   ShieldCheck,
   UploadCloud,
 } from "lucide-react";
@@ -24,9 +24,9 @@ export function FeaturesSection() {
         />
         <GridItem
           area="md:[grid-area:1/7/2/13] xl:[grid-area:2/1/3/5]"
-          icon={<PencilRuler className="h-5 w-5 text-gray-800" />}
-          title="Browser-Based Editing"
-          description="Edit your recordings directly in the browser without any software."
+          icon={<Feather className="h-5 w-5 text-gray-800" />}
+          title="Lightweight & Fast"
+          description="Runs smoothly without slowing down your device."
         />
         <GridItem
           area="md:[grid-area:2/1/3/7] xl:[grid-area:1/5/3/8]"

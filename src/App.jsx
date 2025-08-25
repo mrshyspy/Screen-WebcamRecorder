@@ -9,6 +9,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<LoginPage />} />
+                <Route path="/Signin" element={<Signin />} />
+
 
         <Route path="/RecordedVideo" element={<RecordedVideo />} />
         {/* <Route path="/VideoEditorPage" element={<VideoEditorPage />} /> */}

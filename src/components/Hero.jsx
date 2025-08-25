@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ContainerTextFlip } from "./ui/container-text-flip";
 import { HoverBorderGradient } from "./hover-border-gradient";
+import poster from "../assets/preview.png";
 
 export function HeroSectionOne() {
   return (
@@ -31,7 +32,7 @@ export function HeroSectionOne() {
               {word}
             </motion.span>
           ))}
-          <ContainerTextFlip words={["Record", "Edit", "Download"]} />
+          <ContainerTextFlip words={["Record", "Download", "Share"]} />
           {"it.".split(" ").map((word, index) => (
             <motion.span
               key={index}
@@ -71,7 +72,7 @@ export function HeroSectionOne() {
                 as="button"
                 className="bg-white text-black flex items-center space-x-2"
               >
-                <span>Start recording for free</span>
+                <button>Start recording for free </button>
               </HoverBorderGradient>
             </div>
           </button>
@@ -80,15 +81,16 @@ export function HeroSectionOne() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 1.2 }}
-          className="relative z-10 mt-20 rounded-3xl border border-neutral-200 bg-neutral-100 p-4 shadow-md"
+          className="relative z-10 mt-20 w-4/5 mx-auto rounded-3xl border border-neutral-200 bg-neutral-100 p-3 shadow-lg"
         >
-          <div className="w-full overflow-hidden rounded-xl border border-gray-300">
+          <div className="w-full overflow-hidden rounded-xl border border-gray-300 shadow-sm">
             <img
-              src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=3540&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8f"
+              src={poster}
               alt="Landing page preview"
               className="aspect-[16/9] h-auto w-full object-cover"
               height={1000}
               width={1000}
+              loading="eager"
             />
           </div>
         </motion.div>

@@ -1,6 +1,10 @@
 "use client";
 import { useScroll, useTransform, motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
+import howtouse1 from "../../assets/howtouse1.png";
+import howtouse2 from "../../assets/htu2.png";
+import howtouse3 from "../../assets/htu3.png";
+import download from "../../assets/download.png";
 
 export const Timeline = () => {
   const data = [
@@ -8,17 +12,15 @@ export const Timeline = () => {
       title: "Click on button",
       content: (
         <div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="mb-4 bg-white/10 p-3 rounded-2xl aspect-video">
             <img
-              src="https://assets.aceternity.com/templates/startup-4.webp"
-              alt="startup template"
-              width={500}
-              height={500}
-              className="rounded-3xl object-cover h-20 md:h-44 lg:h-60 w-full shadow-md"
+              src={howtouse1}
+              alt="Click on button tutorial"
+              className="rounded-xl object-cover h-full w-full shadow-lg"
             />
           </div>
-          <p className="text-gray-100 text-xs md:text-sm font-normal mb-8">
-            Built and launched Aceternity UI and Aceternity UI Pro from scratch
+          <p className="text-gray-100 text-sm md:text-base font-normal mb-6">
+            Press the Record button to begin using the screen recorder.{" "}
           </p>
         </div>
       ),
@@ -27,17 +29,15 @@ export const Timeline = () => {
       title: "Start recording",
       content: (
         <div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="mb-4 bg-white/10 p-3 rounded-2xl aspect-video">
             <img
-              src="https://assets.aceternity.com/templates/startup-4.webp"
-              alt="startup template"
-              width={500}
-              height={500}
-              className="rounded-3xl object-cover h-20 md:h-44 lg:h-60 w-full shadow-md"
+              src={howtouse2}
+              alt="Start recording tutorial"
+              className="rounded-xl object-cover h-full w-full shadow-lg"
             />
           </div>
-          <p className="text-gray-100 text-xs md:text-sm font-normal mb-8">
-            Built and launched Aceternity UI and Aceternity UI Pro from scratch
+          <p className="text-gray-100 text-sm md:text-base font-normal mb-6">
+            Click on start recording to record the screen.{" "}
           </p>
         </div>
       ),
@@ -46,55 +46,51 @@ export const Timeline = () => {
       title: "Save, Pause, Retake, Delete",
       content: (
         <div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="mb-4 bg-white/10 p-3 rounded-2xl aspect-video">
             <img
-              src="https://assets.aceternity.com/templates/startup-4.webp"
-              alt="startup template"
-              width={500}
-              height={500}
-              className="rounded-3xl object-cover h-20 md:h-44 lg:h-60 w-full shadow-md"
+              src={howtouse3}
+              alt="Recording controls tutorial"
+              className="rounded-xl object-cover h-full w-full shadow-lg"
             />
           </div>
-          <p className="text-gray-100 text-xs md:text-sm font-normal mb-8">
-            Built and launched Aceternity UI and Aceternity UI Pro from scratch
+          <p className="text-gray-100 text-sm md:text-base font-normal mb-6">
+            After recording starts, click Save to store your video. You can also
+            pause, retake, or delete the recording as needed.{" "}
           </p>
         </div>
       ),
     },
-    {
-      title: "Edit the recording",
-      content: (
-        <div>
-          <div className="grid grid-cols-2 gap-4">
-            <img
-              src="https://assets.aceternity.com/templates/startup-4.webp"
-              alt="startup template"
-              width={500}
-              height={500}
-              className="rounded-2xl object-cover h-20 md:h-44 lg:h-60 w-full shadow-md"
-            />
-          </div>
-          <p className="text-gray-100 text-xs md:text-sm font-normal mb-8">
-            Built and launched Aceternity UI and Aceternity UI Pro from scratch
-          </p>
-        </div>
-      ),
-    },
+    // {
+    //   title: "Edit the recording",
+    //   content: (
+    //     <div>
+    //       <div className="mb-4 bg-white/10 p-3 rounded-2xl aspect-video">
+    //         <img
+    //           src="https://assets.aceternity.com/templates/startup-4.webp"
+    //           alt="Edit recording tutorial"
+    //           className="rounded-xl object-cover h-full w-full shadow-lg"
+    //         />
+    //       </div>
+    //       <p className="text-gray-100 text-sm md:text-base font-normal mb-6">
+    //         After saving the video you can download the recorded video.{" "}
+    //       </p>
+    //     </div>
+    //   ),
+    // },
     {
       title: "Download",
       content: (
         <div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="mb-6">
             <img
-              src="https://assets.aceternity.com/templates/startup-4.webp"
-              alt="startup template"
-              width={500}
-              height={500}
-              className="rounded-2xl object-cover h-20 md:h-44 lg:h-60 w-full shadow-md"
+              src={download}
+
+              alt="Download tutorial"
+              className="rounded-xl object-cover h-full w-full shadow-lg"
             />
           </div>
-          <p className="text-neutral-700 text-xs md:text-sm font-normal mb-8">
-            Built and launched Aceternity UI and Aceternity UI Pro from scratch
+          <p className="text-gray-100 text-sm md:text-base font-normal mb-8">
+            After saving the video you can download the recorded video.
           </p>
         </div>
       ),
@@ -122,9 +118,9 @@ export const Timeline = () => {
 
   return (
     <div>
-         <h2 className="text-center text-5xl font-semibold pb-24 text-slate-700">
-          Quick and easy to use
-        </h2>
+      <h2 className="text-center text-5xl font-semibold pb-24 text-slate-700">
+        Quick and easy to use
+      </h2>
       <div
         className="mx-10  rounded-3xl bg-gradient-to-r from-green-500 to-blue-500 font-sans md:px-10"
         ref={containerRef}
