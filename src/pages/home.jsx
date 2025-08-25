@@ -11,6 +11,7 @@ import { HowToUse } from "../components/HowToUse";
 import { MadeFor } from "../components/MadeFor";
 import { Timeline } from "../components/ui/timeline";
 import CallToAction from "../components/CallToAction";
+import { Footer } from "../components/footer";
 
 import { useNavigate } from "react-router-dom";
 
@@ -296,13 +297,14 @@ const Home = () => {
           >
             <MdCancel className="text-xl md:text-2xl" />
           </button>
-               <video
-        ref={screenVideoRef}
-        autoPlay
-        muted
-        poster="/assets/poster.jpg" // ✅ Static image before video plays
-        className="w-full h-auto  rounded-lg shadow-xl"
-      />
+          <video
+            ref={screenVideoRef}
+            autoPlay
+            muted
+            poster="/assets/poster.jpg" // ✅ Static image before video plays
+            className="w-full h-auto  rounded-lg shadow-xl"
+            style={{ aspectRatio: "16/9" }}
+          />
 
           <div
             className={`absolute bottom-4 right-4  ${
@@ -385,21 +387,9 @@ const Home = () => {
         </div>
       )}
       <canvas ref={canvasRef} className="hidden" />
-      <section className="bg-gradient-to-r from-green-500 to-blue-500 text-center py-16 px-6">
-        <h1 className="text-4xl md:text-5xl font-bold">
-          Screen & Webcam Recorder
-        </h1>
-        <p className="text-lg md:text-xl text-gray-100 mt-4">
-          Record your screen with a webcam overlay and download high-quality
-          videos.
-        </p>
-      </section>
-
-      <section className=" relative py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
-          Live Preview (Picture-in-Picture)
-        </h2>
-      </section>
+     
+      <Footer />
+      
     </div>
   );
 };
