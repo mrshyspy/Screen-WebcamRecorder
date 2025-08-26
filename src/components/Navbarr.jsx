@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import { HeroSectionOne } from "./Hero";
 
-export function Navbarr() {
+export function Navbarr( { setIsRecordingWindowOn } ) {
   const navItems = [
     {
       name: "About",
@@ -81,7 +81,9 @@ export function Navbarr() {
           </MobileNavMenu>
         </MobileNav>
       </Navbar>
-      <HeroSectionOne />
+      <HeroSectionOne
+        setIsRecordingWindowOn={setIsRecordingWindowOn}
+      />
       {/* Navbar */}
     </div>
   );

@@ -270,11 +270,15 @@ const Home = () => {
             : "transition-all duration-300"
         }`}
       >
-        <Navbarr />
+        <Navbarr
+          setIsRecordingWindowOn={setIsRecordingWindowOn}
+        />
         <FeaturesSection />
         <Timeline />
         <MadeFor />
-        <CallToAction />
+        <CallToAction
+          setIsRecordingWindowOn={setIsRecordingWindowOn}
+        />
       </div>
       {!isRecordingWindowOn ? (
         <div className="fixed bottom-6 left-6 z-50 group">

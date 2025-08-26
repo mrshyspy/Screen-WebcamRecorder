@@ -3,7 +3,7 @@ import { ContainerTextFlip } from "./ui/container-text-flip";
 import { HoverBorderGradient } from "./hover-border-gradient";
 import poster from "../assets/preview.png";
 
-export function HeroSectionOne() {
+export function HeroSectionOne({ setIsRecordingWindowOn }) {
   return (
     <div className="relative mx-auto mb-20 flex max-w-7xl flex-col items-center justify-center">
       {/* Decorative borders */}
@@ -76,6 +76,7 @@ export function HeroSectionOne() {
           <HoverBorderGradient
             containerClassName="rounded-full"
             as="button"
+            onClick={() => { setIsRecordingWindowOn(true); }}
             className="bg-white text-black flex items-center space-x-2"
           >
             Start recording for free
