@@ -6,6 +6,7 @@ import poster from "../assets/preview.png";
 export function HeroSectionOne() {
   return (
     <div className="relative mx-auto mb-20 flex max-w-7xl flex-col items-center justify-center">
+      {/* Decorative borders */}
       <div className="absolute inset-y-0 left-0 h-full w-px bg-neutral-200/80">
         <div className="absolute top-0 h-40 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent" />
       </div>
@@ -15,7 +16,10 @@ export function HeroSectionOne() {
       <div className="absolute inset-x-0 bottom-0 h-px w-full bg-neutral-200/80">
         <div className="absolute mx-auto h-px w-40 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
       </div>
+
+      {/* Content */}
       <div className="px-4 py-20 md:py-24">
+        {/* Heading */}
         <h1 className="relative z-10 mx-auto max-w-4xl text-center text-2xl font-bold text-slate-700 md:text-4xl lg:text-7xl">
           {"Start your screen's story here -".split(" ").map((word, index) => (
             <motion.span
@@ -49,6 +53,8 @@ export function HeroSectionOne() {
             </motion.span>
           ))}
         </h1>
+
+        {/* Subheading */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -59,24 +65,24 @@ export function HeroSectionOne() {
           downloads. No fuss. Just smooth, high-quality screen recording for
           free.
         </motion.p>
+
+        {/* CTA Button */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 1 }}
           className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
         >
-          <button>
-            <div className="flex justify-center text-center">
-              <HoverBorderGradient
-                containerClassName="rounded-full"
-                as="button"
-                className="bg-white text-black flex items-center space-x-2"
-              >
-                <button>Start recording for free </button>
-              </HoverBorderGradient>
-            </div>
-          </button>
+          <HoverBorderGradient
+            containerClassName="rounded-full"
+            as="button"
+            className="bg-white text-black flex items-center space-x-2"
+          >
+            Start recording for free
+          </HoverBorderGradient>
         </motion.div>
+
+        {/* Preview Image */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

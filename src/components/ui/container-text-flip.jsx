@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import React, { useState, useEffect, useId } from "react";
 
 import { motion } from "framer-motion";
@@ -19,7 +19,6 @@ export function ContainerTextFlip({
   const updateWidthForWord = () => {
     if (textRef.current) {
       // Add some padding to the text width (30px on each side)
-      // @ts-ignore
       const textWidth = textRef.current.scrollWidth + 30;
       setWidth(textWidth);
     }
@@ -40,13 +39,13 @@ export function ContainerTextFlip({
   }, [words, interval]);
 
   return (
-    <motion.p
+    <motion.div
       layout
       layoutId={`words-here-${id}`}
       animate={{ width }}
       transition={{ duration: animationDuration / 2000 }}
       className={cn(
-        "relative inline-block rounded-lg pt-2 pb-3 text-center text-2xl font-bold  md:text-4xl lg:text-7xl dark:text-slate-300text-4xl  text-slate-700 ",
+        "relative inline-block rounded-lg pt-2 pb-3 text-center text-2xl font-bold md:text-4xl lg:text-7xl text-slate-700 dark:text-slate-700",
         "[background:linear-gradient(to_bottom,#48BB78,#3B82F6)]",
         "shadow-[inset_0_-1px_#d1d5db,inset_0_0_0_1px_#d1d5db,_0_4px_8px_#d1d5db]",
         "dark:[background:linear-gradient(to_bottom,#48BB78,#3B82F6)]",
@@ -82,6 +81,6 @@ export function ContainerTextFlip({
           ))}
         </motion.div>
       </motion.div>
-    </motion.p>
+    </motion.div>
   );
 }
