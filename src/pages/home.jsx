@@ -307,13 +307,15 @@ const Home = () => {
         </div>
       ) : (
         <div className=" fixed top-1/2 left-1/2 transition-all duration-800 ease-in-out transform -translate-x-1/2 -translate-y-1/2 max-h-screen z-50 mx-auto w-3/4 max-w-6xl border-4 border-gray-600 rounded-xl overflow-hidden">
-          <button
-            onClick={() => setIsRecordingWindowOn(false)}
-            className="absolute top-3 right-3 bg-black bg-opacity-60 hover:bg-opacity-80 text-white p-2 rounded-full z-50"
-            title="Cancel / Close"
-          >
-            <MdCancel className="text-xl md:text-2xl" />
-          </button>
+          {!isRecording && (
+            <button
+              onClick={() => setIsRecordingWindowOn(false)}
+              className="absolute top-3 right-3 bg-black bg-opacity-60 hover:bg-opacity-80 text-white p-2 rounded-full z-50"
+              title="Cancel / Close"
+            >
+              <MdCancel className="text-xl md:text-2xl" />
+            </button>
+          )}
           <video
             ref={screenVideoRef}
             autoPlay
