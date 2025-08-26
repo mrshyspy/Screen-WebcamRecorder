@@ -13,9 +13,10 @@ import { Timeline } from "../components/ui/timeline";
 import CallToAction from "../components/CallToAction";
 import { Footer } from "../components/footer";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Home = () => {
+  const location = useLocation();
   const webcamVideoRef = useRef(null);
   const screenVideoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -227,11 +228,19 @@ const Home = () => {
 
   useEffect(() => {
     if (recordedChunks.length > 0) {
-      const blob = new Blob(recordedChunks, { type: "video/webm" });
+      const blob = new Blob(recordedChunks, { type: "video/webm;codecs=vp9" });
       const url = URL.createObjectURL(blob);
       setVideoUrl(url);
       setRecordedChunks([]);
-      navigate("/RecordedVideo", { state: { videoUrl: url } });
+      
+      // Store the blob in sessionStorage to persist it across navigation
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        sessionStorage.setItem('recordedVideo', base64data);
+        navigate("/RecordedVideo", { state: { videoUrl: base64data } });
+      };
     }
   }, [recordedChunks]);
 
@@ -248,6 +257,8 @@ const Home = () => {
       }
     };
   }, [videoUrl]);
+
+
   //   useEffect(() => {
   //   if (isRecordingWindowOn) {
   //     document.body.classList.add("overflow-hidden");
