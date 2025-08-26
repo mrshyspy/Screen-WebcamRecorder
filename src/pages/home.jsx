@@ -279,6 +279,8 @@ const Home = () => {
         <CallToAction
           setIsRecordingWindowOn={setIsRecordingWindowOn}
         />
+               <Footer />
+
       </div>
       {!isRecordingWindowOn ? (
         <div className="fixed bottom-6 left-6 z-50 group">
@@ -392,7 +394,6 @@ const Home = () => {
       )}
       <canvas ref={canvasRef} className="hidden" />
      
-      <Footer />
       
     </div>
   );
