@@ -4,7 +4,7 @@ import { FaFacebookF, FaTwitter, FaLinkedinIn, FaYoutube } from "react-icons/fa"
 
 export function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-green-500 to-blue-500 text-gray-950 pt-12 pb-6 mt-20">
+    <footer className="bg-gradient-to-r rounded-t-3xl from-green-500 to-blue-500 text-gray-950 pt-12 pb-6 mt-20">
       <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
         
         {/* Brand Section */}
