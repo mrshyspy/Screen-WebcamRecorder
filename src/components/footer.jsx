@@ -9,10 +9,10 @@ export function Footer() {
         
         {/* Brand Section */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-4">ScreenCast Pro</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">Recodek</h2>
           <p className="text-sm leading-relaxed">
             Record, edit, and share your screen with ease. Built for students,
-            professionals, gamers, and creators — ScreenCast Pro makes screen
+            professionals, gamers, and creators — Recodek makes screen
             recording effortless.
           </p>
         </div>
@@ -53,7 +53,7 @@ export function Footer() {
 
       {/* Bottom Bar */}
       <div className="mt-10 border-t border-slate-700 pt-6 text-center text-sm text-gray-950">
-        © {new Date().getFullYear()} ScreenCast Pro. All rights reserved.
+        © {new Date().getFullYear()} Recodek. All rights reserved.
       </div>
     </footer>
   );

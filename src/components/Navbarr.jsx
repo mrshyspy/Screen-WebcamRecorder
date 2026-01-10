@@ -15,20 +15,11 @@ import { HeroSectionOne } from "./Hero";
 
 export function Navbarr( { setIsRecordingWindowOn } ) {
   const navItems = [
-    {
-      name: "About",
-      link: "#about",
-    },
-    {
-      name: "Features",
-      link: "#features",
-    },
-    
-    {
-      name: "Contact",
-      link: "#contact",
-    },
-  ];
+    { name: "Home", link: "/" },
+  { name: "Features", link: "#features" },
+  { name: "About", link: "/about" },
+];
+
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -39,10 +30,10 @@ export function Navbarr( { setIsRecordingWindowOn } ) {
         <NavBody>
           <NavbarLogo />
           <NavItems items={navItems} />
-          <div className="flex items-center gap-4">
+          {/* <div className="flex items-center gap-4">
             <NavbarButton variant="secondary">Login</NavbarButton>
             <NavbarButton variant="primary">Start using</NavbarButton>
-          </div>
+          </div> */}
         </NavBody>
 
         {/* Mobile Navigation */}
@@ -64,7 +55,7 @@ export function Navbarr( { setIsRecordingWindowOn } ) {
                 <span className="block">{item.name}</span>
               </a>
             ))}
-            <div className="flex w-full flex-col gap-4">
+            {/* <div className="flex w-full flex-col gap-4">
               <NavbarButton
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
@@ -77,7 +68,7 @@ export function Navbarr( { setIsRecordingWindowOn } ) {
                 className="w-full">
                 start using
               </NavbarButton>
-            </div>
+            </div> */}
           </MobileNavMenu>
         </MobileNav>
       </Navbar>

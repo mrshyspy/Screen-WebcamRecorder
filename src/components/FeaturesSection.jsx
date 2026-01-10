@@ -11,7 +11,7 @@ import { GlowingEffect } from "./ui/glowing-effect";
 
 export function FeaturesSection() {
   return (
-    <div>
+    <section id="features">
       <h1 className="text-center text-5xl text-slate-700 font-semibold">
         Advanced features for easy, custom recording
       </h1>
@@ -47,7 +47,7 @@ export function FeaturesSection() {
           description="Your recordings stay private and secure — your data is yours."
         />
       </ul>
-    </div>
+    </section>
   );
 }
 
