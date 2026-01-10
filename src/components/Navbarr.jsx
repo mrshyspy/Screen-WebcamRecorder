@@ -17,7 +17,7 @@ export function Navbarr( { setIsRecordingWindowOn } ) {
   const navItems = [
     { name: "Home", link: "/" },
   { name: "Features", link: "#features" },
-  { name: "About", link: "/about" },
+  { name: "About", link: "/#about" },
 ];
 
 
@@ -30,10 +30,7 @@ export function Navbarr( { setIsRecordingWindowOn } ) {
         <NavBody>
           <NavbarLogo />
           <NavItems items={navItems} />
-          {/* <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary">Login</NavbarButton>
-            <NavbarButton variant="primary">Start using</NavbarButton>
-          </div> */}
+          
         </NavBody>
 
         {/* Mobile Navigation */}
