@@ -3,7 +3,6 @@
 A browser-based screen and webcam recording application built with React. Record your screen and webcam simultaneously with the webcam appearing as a picture-in-picture overlay in the bottom-right corner.
 
 ![Demo Screenshot](public/preview.png)
-*(Replace the path above with your actual screenshot)*
 
 ##  Features
 
@@ -27,36 +26,6 @@ A browser-based screen and webcam recording application built with React. Record
 * **MediaDevices API** - Screen and webcam capture
 
 ---
-
-## 🚀 Installation
-
-### Prerequisites
-* Node.js (v14 or higher)
-* npm or yarn
-
-### Setup
-
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/yourusername/screen-webcam-recorder.git](https://github.com/yourusername/screen-webcam-recorder.git)
-    cd screen-webcam-recorder
-    ```
-
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
-
-3.  **Start the development server:**
-    ```bash
-    npm run dev
-    ```
-
-4.  **Open your browser:**
-    Navigate to `http://localhost:5173` (or the port shown in your terminal).
-
----
-
 ## 📖 Usage
 
 1.  **Start Recording**
