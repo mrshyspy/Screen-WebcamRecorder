@@ -4,7 +4,6 @@ import RecordedVideo from "./pages/RecordedVideo";
 // import VideoEditorPage from './pages/VideoEditorPage';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Portfolio from "./pages/portfolio";
-import About from "./pages/about";
 
 function App() {
   return (
@@ -13,7 +12,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/Portfolio" element={<Portfolio />} />
         <Route path="/RecordedVideo" element={<RecordedVideo />} />
-        <Route path="/about" element={<About />} />
         {/* <Route path="/VideoEditorPage" element={<VideoEditorPage />} /> */}
       </Routes>
     </BrowserRouter>

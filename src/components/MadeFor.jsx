@@ -8,7 +8,7 @@ import content from "../assets/content.png";
 
 export function MadeFor() {
   return (
-    <div>
+    <div id="made-for">
       <h2 className="text-center text-5xl font-semibold py-20 text-slate-700">
         Made for everyone
       </h2>

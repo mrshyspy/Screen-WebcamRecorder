@@ -20,7 +20,7 @@ export function Navbarr( { setIsRecordingWindowOn } ) {
   const navItems = [
     { name: "Home", link: "/" },
     { name: "Features", link: "#features" },
-    { name: "About", link: "/about" },
+    { name: "About", link: "#made-for" },
   ];
 
   const handleItemClick = (item) => {
@@ -29,7 +29,7 @@ export function Navbarr( { setIsRecordingWindowOn } ) {
     } else if (item.name === "Features") {
       navigate("/#features");
     } else if (item.name === "About") {
-      navigate("/about");
+      navigate("/#made-for");
     }
   };
 

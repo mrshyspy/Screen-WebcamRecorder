@@ -46,6 +46,11 @@ const Home = () => {
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
+    } else if (location.hash === '#made-for') {
+      const element = document.getElementById('made-for');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   }, [location]);
 
