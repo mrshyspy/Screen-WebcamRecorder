@@ -16,7 +16,7 @@ A browser-based screen and webcam recording application built with React. Record
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 * **[React](https://reactjs.org/)** - UI framework
 * **[Tailwind CSS](https://tailwindcss.com/)** - Styling
@@ -26,7 +26,7 @@ A browser-based screen and webcam recording application built with React. Record
 * **MediaDevices API** - Screen and webcam capture
 
 ---
-## 📖 Usage
+##  Usage
 
 1.  **Start Recording**
     * Click the **"Start Recording"** button.
@@ -51,27 +51,8 @@ A browser-based screen and webcam recording application built with React. Record
 
 ---
 
-## 🌐 Browser Compatibility
 
-This application requires modern browser APIs.
-
-| Browser | Minimum Version | Support Level |
-|:--------|:----------------|:--------------|
-| **Chrome** | 74+ | ✅ Full support |
-| **Edge** | 79+ | ✅ Full support |
-| **Firefox** | 66+ | ✅ Full support |
-| **Opera** | 62+ | ✅ Full support |
-| **Safari** | 13+ | ⚠️ Limited (MediaRecorder API issues) |
-
-### Required Browser Features
-* `MediaDevices` API (`getUserMedia`, `getDisplayMedia`)
-* `MediaRecorder` API
-* `Canvas` API (`captureStream`)
-* WebM codec support
-
----
-
-## ⚙️ Technical Details
+## Technical Details
 
 ### How It Works
 1.  **Stream Capture:** The app captures two separate video streams:
