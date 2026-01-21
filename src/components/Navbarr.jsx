@@ -11,15 +11,27 @@ import {
   MobileNavMenu,
 } from "./ui/resizable-navbar";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { HeroSectionOne } from "./Hero";
 
 export function Navbarr( { setIsRecordingWindowOn } ) {
+  const navigate = useNavigate();
+
   const navItems = [
     { name: "Home", link: "/" },
-  { name: "Features", link: "#features" },
-  { name: "About", link: "/#about" },
-];
+    { name: "Features", link: "#features" },
+    { name: "About", link: "/about" },
+  ];
 
+  const handleItemClick = (item) => {
+    if (item.name === "Home") {
+      window.location.reload();
+    } else if (item.name === "Features") {
+      navigate("/#features");
+    } else if (item.name === "About") {
+      navigate("/about");
+    }
+  };
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -29,7 +41,7 @@ export function Navbarr( { setIsRecordingWindowOn } ) {
         {/* Desktop Navigation */}
         <NavBody>
           <NavbarLogo />
-          <NavItems items={navItems} />
+          <NavItems items={navItems} onItemClick={handleItemClick} />
           
         </NavBody>
 
@@ -47,7 +59,11 @@ export function Navbarr( { setIsRecordingWindowOn } ) {
               <a
                 key={`mobile-link-${idx}`}
                 href={item.link}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleItemClick(item);
+                  setIsMobileMenuOpen(false);
+                }}
                 className="relative text-neutral-600 dark:text-neutral-300">
                 <span className="block">{item.name}</span>
               </a>
@@ -69,9 +85,11 @@ export function Navbarr( { setIsRecordingWindowOn } ) {
           </MobileNavMenu>
         </MobileNav>
       </Navbar>
-      <HeroSectionOne
-        setIsRecordingWindowOn={setIsRecordingWindowOn}
-      />
+      {setIsRecordingWindowOn && (
+        <HeroSectionOne
+          setIsRecordingWindowOn={setIsRecordingWindowOn}
+        />
+      )}
       {/* Navbar */}
     </div>
   );

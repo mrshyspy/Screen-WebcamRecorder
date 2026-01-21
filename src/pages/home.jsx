@@ -40,6 +40,15 @@ const Home = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (location.hash === '#features') {
+      const element = document.getElementById('features');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location]);
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60)
       .toString()
